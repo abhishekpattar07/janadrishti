@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useLocale, Locale } from '@/lib/useLocale'
-import { Globe, ChevronDown, User, LogOut, FileText, ShieldCheck } from 'lucide-react'
+import { Globe, ChevronDown, User, LogOut, FileText, ShieldCheck, Plus } from 'lucide-react'
 
 const NAV_DICTIONARY = {
   en: {
@@ -122,19 +122,19 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur shadow-xs">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
-        {/* Brand Logo with Official Dual Lockup */}
-        <Link href="/" className="flex items-center gap-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3.5">
+        {/* Brand Logo with Official Dual Lockup (Compact on mobile) */}
+        <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
           <img
             src="/logo.png"
             alt="JanaDrishti Logo"
-            className="h-10 w-10 rounded-xl object-contain shadow-xs border border-gray-100"
+            className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl object-contain shadow-xs border border-gray-100"
           />
           <div className="flex flex-col leading-tight">
-            <span className="text-lg font-extrabold tracking-tight text-blue-950 font-sans">
+            <span className="text-base sm:text-lg font-extrabold tracking-tight text-blue-950 font-sans">
               JanaDrishti
             </span>
-            <span className="text-xs font-bold text-orange-600 -mt-0.5">
+            <span className="text-[10px] sm:text-xs font-bold text-orange-600 -mt-0.5">
               ಜನದೃಷ್ಟಿ
             </span>
           </div>
@@ -158,20 +158,22 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Right Section: Language Dropdown, User Profile / Sign In, & Quick Actions */}
-        <div className="flex items-center gap-3">
-          {/* Language Selector Dropdown */}
+        {/* Right Section: Mobile-optimized Language, Profile / Sign-in & Quick Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* Language Selector Dropdown (Globe icon only on mobile, full name on desktop) */}
           <div className="relative">
             <button
               onClick={() => {
                 setLangOpen(!langOpen)
                 setUserMenuOpen(false)
               }}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-gray-50/80 p-2 sm:px-3 sm:py-2 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors shrink-0"
+              title="Change Language / ಭಾಷೆ ಬದಲಾಯಿಸಿ"
+              aria-label="Change Language"
             >
-              <Globe className="h-3.5 w-3.5 text-blue-700" />
-              <span>{currentLangObj.name}</span>
-              <ChevronDown className="h-3 w-3 text-gray-400" />
+              <Globe className="h-4 w-4 text-blue-700 shrink-0" />
+              <span className="hidden sm:inline">{currentLangObj.name}</span>
+              <ChevronDown className="h-3 w-3 text-gray-400 hidden sm:inline" />
             </button>
 
             {langOpen && (
@@ -203,7 +205,7 @@ export function Navbar() {
                   setUserMenuOpen(!userMenuOpen)
                   setLangOpen(false)
                 }}
-                className="flex items-center gap-2 rounded-xl border border-blue-200/80 bg-blue-50/50 hover:bg-blue-100/60 px-2.5 py-1.5 transition-all text-left group"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-blue-200/80 bg-blue-50/50 hover:bg-blue-100/60 p-1 sm:px-2.5 sm:py-1.5 transition-all text-left group"
               >
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-bold text-xs flex items-center justify-center shadow-xs">
                   {user.initials}
@@ -211,7 +213,7 @@ export function Navbar() {
                 <span className="hidden sm:inline text-xs font-bold text-blue-950 max-w-[100px] truncate">
                   {user.name}
                 </span>
-                <ChevronDown className="h-3 w-3 text-blue-600 group-hover:translate-y-0.5 transition-transform" />
+                <ChevronDown className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-blue-600 group-hover:translate-y-0.5 transition-transform" />
               </button>
 
               {userMenuOpen && (
@@ -274,19 +276,23 @@ export function Navbar() {
           ) : (
             <Link
               href="/auth/login"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all shadow-2xs"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 p-2 sm:px-3.5 sm:py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-all shadow-2xs shrink-0"
+              title={currentNav.signIn}
+              aria-label={currentNav.signIn}
             >
-              <User className="h-3.5 w-3.5 text-slate-500" />
-              <span>{currentNav.signIn}</span>
+              <User className="h-4 w-4 text-slate-700 shrink-0" />
+              <span className="hidden sm:inline">{currentNav.signIn}</span>
             </Link>
           )}
 
-          {/* Saffron Report Issue Pill Button */}
+          {/* Saffron Report Issue Button (Compact on mobile) */}
           <Link
             href="/report"
-            className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-sm hover:from-orange-600 hover:to-orange-700 transition-all hover:shadow hover:-translate-y-0.5"
+            className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-2.5 sm:px-4 py-2 text-xs font-bold text-white shadow-sm hover:from-orange-600 hover:to-orange-700 transition-all hover:shadow hover:-translate-y-0.5 shrink-0"
           >
-            <span>{currentNav.reportIssue}</span>
+            <Plus className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden sm:inline">{currentNav.reportIssue.replace('+', '').trim()}</span>
+            <span className="inline sm:hidden font-bold">Report</span>
           </Link>
         </div>
       </div>
