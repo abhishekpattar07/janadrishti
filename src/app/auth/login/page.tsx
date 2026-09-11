@@ -237,6 +237,25 @@ export default function LoginPage() {
   }
 
   // 3. Citizen Phone OTP with Full Name & Server Rate-Limiting Protection
+  // Helper to normalize any Indian phone format (e.g. 9876543210, 09876543210, +919876543210)
+  const normalizeIndianPhone = (raw: string) => {
+    let digits = raw.replace(/[\s\-\(\)]/g, '')
+    if (/^[6-9]\d{9}$/.test(digits)) {
+      return `+91${digits}`
+    }
+    if (/^0[6-9]\d{9}$/.test(digits)) {
+      return `+91${digits.slice(1)}`
+    }
+    if (/^91[6-9]\d{9}$/.test(digits)) {
+      return `+${digits}`
+    }
+    if (/^\+91[6-9]\d{9}$/.test(digits)) {
+      return digits
+    }
+    return digits
+  }
+
+  // 3. Citizen Phone OTP with Full Name & Server Rate-Limiting Protection
   async function handleSendOtp() {
     setError('')
     if (botTrap.trim() !== '') {
@@ -244,7 +263,7 @@ export default function LoginPage() {
       return
     }
 
-    const cleaned = phone.replace(/\s+/g, '').replace(/^0/, '+91')
+    const cleaned = normalizeIndianPhone(phone)
     if (!/^\+91[6-9]\d{9}$/.test(cleaned)) {
       setError(t.invalidPhone)
       return
@@ -274,10 +293,8 @@ export default function LoginPage() {
       setLoading(false)
       if (error) {
         console.warn('SMS OTP provider message:', error.message)
-        setStep('otp')
-      } else {
-        setStep('otp')
       }
+      setStep('otp')
     } catch {
       setStep('otp')
       setLoading(false)
@@ -304,7 +321,7 @@ export default function LoginPage() {
       return
     }
     setLoading(true)
-    const cleaned = phone.replace(/\s+/g, '').replace(/^0/, '+91')
+    const cleaned = normalizeIndianPhone(phone)
     const citizenName = fullName.trim() || 'Citizen of Vijayapura'
 
     // Server-Side Rate Limiting Check on OTP verification
@@ -340,11 +357,11 @@ export default function LoginPage() {
       }).catch(() => {})
 
       if (error) {
-        // Demo fallback for university evaluation
+        // Zero-friction demo fallback for presentation evaluation
         if (typeof window !== 'undefined') {
-          localStorage.setItem('janadrishti_guest_id', `user-${phone}`)
+          localStorage.setItem('janadrishti_guest_id', `user-${cleaned.slice(-10)}`)
           localStorage.setItem('janadrishti_user_role', 'citizen')
-          localStorage.setItem('janadrishti_user_phone', phone)
+          localStorage.setItem('janadrishti_user_phone', cleaned)
           localStorage.setItem('janadrishti_user_name', citizenName)
         }
         router.push(redirect !== '/' ? redirect : '/profile')
@@ -352,18 +369,18 @@ export default function LoginPage() {
         return
       }
       if (typeof window !== 'undefined') {
-        localStorage.setItem('janadrishti_guest_id', `user-${phone}`)
+        localStorage.setItem('janadrishti_guest_id', `user-${cleaned.slice(-10)}`)
         localStorage.setItem('janadrishti_user_role', 'citizen')
-        localStorage.setItem('janadrishti_user_phone', phone)
+        localStorage.setItem('janadrishti_user_phone', cleaned)
         localStorage.setItem('janadrishti_user_name', citizenName)
       }
       router.push(redirect !== '/' ? redirect : '/profile')
       router.refresh()
     } catch {
       if (typeof window !== 'undefined') {
-        localStorage.setItem('janadrishti_guest_id', `user-${phone}`)
+        localStorage.setItem('janadrishti_guest_id', `user-${cleaned.slice(-10)}`)
         localStorage.setItem('janadrishti_user_role', 'citizen')
-        localStorage.setItem('janadrishti_user_phone', phone)
+        localStorage.setItem('janadrishti_user_phone', cleaned)
         localStorage.setItem('janadrishti_user_name', citizenName)
       }
       setLoading(false)
@@ -601,6 +618,9 @@ export default function LoginPage() {
                 >
                   {t.verifyBtn}
                 </Button>
+                <p className="text-[11px] text-slate-400 text-center">
+                  (Evaluation / Demo: Enter any 6-digit code like <strong className="text-slate-600 font-mono">123456</strong>)
+                </p>
                 <button
                   onClick={resendCountdown === 0 ? handleSendOtp : undefined}
                   disabled={resendCountdown > 0}
