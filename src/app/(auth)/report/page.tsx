@@ -225,6 +225,7 @@ export default function ReportPage() {
 
   // Refs
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -250,6 +251,16 @@ export default function ReportPage() {
   const [cameraError, setCameraError] = useState('')
   const [gps, setGps] = useState<{ lat: number; lng: number; accuracy: number } | null>(null)
   const [gpsStatus, setGpsStatus] = useState<'idle' | 'locating' | 'ready' | 'error'>('idle')
+
+  // Attach camera stream to video element when camera becomes active
+  useEffect(() => {
+    if (cameraActive && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current
+      videoRef.current.play().catch((err) => {
+        console.warn('Video auto-play warning:', err)
+      })
+    }
+  }, [cameraActive])
 
   // AI Civic Vision Assistant
   const [aiAnalyzing, setAiAnalyzing] = useState(false)
@@ -345,21 +356,34 @@ export default function ReportPage() {
     setAiApplied(true)
   }
 
-  // Camera Handler
+  // Camera Handler (Universal Support: WebRTC with fallback to Native Mobile Camera)
   const startCamera = async () => {
     setCameraError('')
+
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      // Browser doesn't support WebRTC camera, launch native camera directly
+      cameraInputRef.current?.click()
+      return
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-      })
+      let stream: MediaStream
+      try {
+        // First attempt: back/environment camera for civic defect photography
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        })
+      } catch {
+        // Second attempt: any available camera (laptop webcam, front camera)
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      }
+
       streamRef.current = stream
       setCameraActive(true)
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        videoRef.current.play()
-      }
     } catch {
-      setCameraError('Camera access unavailable on this device. Please use "Upload Photos" instead.')
+      // If WebRTC permission is blocked or unavailable, seamlessly open native camera
+      cameraInputRef.current?.click()
     }
   }
 
@@ -679,6 +703,16 @@ export default function ReportPage() {
             onChange={handleFileUpload}
             accept="image/*"
             multiple
+            className="hidden"
+          />
+
+          {/* Hidden Native Mobile Camera Input */}
+          <input
+            type="file"
+            ref={cameraInputRef}
+            onChange={handleFileUpload}
+            accept="image/*"
+            capture="environment"
             className="hidden"
           />
 
