@@ -1,0 +1,40 @@
+name: Supabase & Vercel Keep-Alive
+
+on:
+  schedule:
+    # Run every 3 days at 05:00 AM UTC (10:30 AM IST)
+    # Supabase free tier pauses after 7 days of inactivity.
+    # Running every 3 days ensures the database NEVER pauses, 100% free!
+    - cron: '0 5 */3 * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database (Direct REST Query)
+        run: |
+          echo "Sending keep-alive query to Supabase REST API..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: sb_publishable_ERzWMd93XFy5EngtlMb0Xw_61MqSfiT" \
+            -H "Authorization: Bearer sb_publishable_ERzWMd93XFy5EngtlMb0Xw_61MqSfiT" \
+            "https://lunpjpvucdbvycfwfheb.supabase.co/rest/v1/wards?select=ward_number&limit=1")
+          
+          echo "Supabase Response HTTP Code: $STATUS"
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ]; then
+            echo "✅ Supabase database is active and awake!"
+          else
+            echo "⚠️ Unexpected Supabase status: $STATUS"
+            exit 1
+          fi
+
+      - name: Ping JanaDrishti Vercel Deployment
+        run: |
+          echo "Pinging JanaDrishti Health Check endpoint..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://janadrishti.vercel.app/api/health")
+          echo "Vercel Health Response HTTP Code: $STATUS"
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ]; then
+            echo "✅ JanaDrishti production deployment is healthy!"
+          else
+            echo "⚠️ Health check returned status: $STATUS"
+          fi
