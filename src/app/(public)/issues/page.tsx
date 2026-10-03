@@ -66,7 +66,7 @@ export default async function IssuesPage({
       category: { id: 'c2', name: 'Pothole / Bad Road', name_kn: 'ಗುಂಡಿ / ಕೆಟ್ಟ ರಸ್ತೆ', slug: 'pothole', icon: 'construction' },
       ward: { id: 'w12', ward_number: 12, name: 'Gol Gumbaz Area' },
       department: { id: 'd1', name: 'Roads & Infrastructure', slug: 'roads' },
-      media: [{ public_url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=400&q=80', media_context: 'report' }],
+      media: [{ public_url: '/images/pothole_before.jpg', media_context: 'report' }],
     },
     {
       id: 'sample-3',
@@ -83,7 +83,7 @@ export default async function IssuesPage({
       category: { id: 'c3', name: 'Garbage / Waste Dumping', name_kn: 'ಕಸ / ತ್ಯಾಜ್ಯ ಎಸೆಯುವಿಕೆ', slug: 'garbage', icon: 'trash' },
       ward: { id: 'w2', ward_number: 2, name: 'Adil Shahi Colony' },
       department: { id: 'd2', name: 'Sanitation & Waste Management', slug: 'sanitation' },
-      media: [{ public_url: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=400&q=80', media_context: 'report' }],
+      media: [{ public_url: '/images/garbage_before.jpg', media_context: 'report' }],
     }
   ]
 

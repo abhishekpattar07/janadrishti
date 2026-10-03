@@ -49,7 +49,7 @@ export default async function AdminIssuePage({ params }: { params: Promise<{ id:
       category: { id: 'c2', name: 'Pothole / Bad Road', name_kn: 'ಗುಂಡಿ / ಕೆಟ್ಟ ರಸ್ತೆ', slug: 'pothole' },
       ward: { id: 'w12', ward_number: 12, name: 'Gol Gumbaz Area' },
       department: { id: 'd1', name: 'Roads & Infrastructure' },
-      media: [{ public_url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&q=80', media_context: 'report' }],
+      media: [{ public_url: '/images/pothole_before.jpg', media_context: 'report' }],
       timeline: [
         { id: 't1', event_type: 'created', description: 'Citizen reported issue with GPS verified photo', created_at: new Date(Date.now() - 3600000 * 18).toISOString() },
         { id: 't2', event_type: 'status_change', description: 'Section Engineer acknowledged grievance', created_at: new Date(Date.now() - 3600000 * 12).toISOString() },

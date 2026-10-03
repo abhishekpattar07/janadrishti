@@ -66,8 +66,8 @@ export default async function IssueDetailPage({ params }: { params: Promise<{ id
       ward: { id: 'w11', ward_number: 11, name: 'Gandhi Chowk' },
       department: { id: 'd1', name: 'Roads & Infrastructure' },
       media: [
-        { public_url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&q=80', media_context: 'report', capture_lat: 16.828, capture_lng: 75.710 },
-        { public_url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&q=80', media_context: 'resolution', capture_lat: 16.828, capture_lng: 75.710 }
+        { public_url: '/images/pothole_before.jpg', media_context: 'report', capture_lat: 16.828, capture_lng: 75.710 },
+        { public_url: '/images/pothole_after.jpg', media_context: 'resolution', capture_lat: 16.828, capture_lng: 75.710 }
       ],
       timeline: [
         { id: 't1', event_type: 'created', description: 'Citizen reported defect with GPS watermark', created_at: new Date(Date.now() - 3600000 * 72).toISOString() },
@@ -93,8 +93,8 @@ export default async function IssueDetailPage({ params }: { params: Promise<{ id
       ward: { id: 'w2', ward_number: 2, name: 'Adil Shahi Colony' },
       department: { id: 'd2', name: 'Sanitation & Waste Management' },
       media: [
-        { public_url: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=800&q=80', media_context: 'report', capture_lat: 16.834, capture_lng: 75.719 },
-        { public_url: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&q=80', media_context: 'resolution', capture_lat: 16.834, capture_lng: 75.719 }
+        { public_url: '/images/garbage_before.jpg', media_context: 'report', capture_lat: 16.834, capture_lng: 75.719 },
+        { public_url: '/images/garbage_after.jpg', media_context: 'resolution', capture_lat: 16.834, capture_lng: 75.719 }
       ],
       timeline: [
         { id: 't1', event_type: 'created', description: 'Citizen reported garbage dumping', created_at: new Date(Date.now() - 3600000 * 52).toISOString() },

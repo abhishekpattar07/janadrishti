@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 interface BeforeAfterSliderProps {
   beforeImage: string
@@ -17,7 +17,20 @@ export function BeforeAfterSlider({
 }: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(50)
   const [isDragging, setIsDragging] = useState(false)
+  const [containerWidth, setContainerWidth] = useState<number>(0)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth)
+      }
+    }
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return
@@ -85,7 +98,7 @@ export function BeforeAfterSlider({
             alt="Before defect"
             className="absolute inset-0 h-full w-full object-cover"
             style={{
-              width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
+              width: containerWidth ? `${containerWidth}px` : '100%',
               maxWidth: 'none'
             }}
           />

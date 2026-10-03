@@ -35,7 +35,7 @@ const DEMO_FALLBACK_ISSUES = [
     upvote_count: 58,
     status: 'in_progress',
     reported_at: '2 days ago',
-    photo_url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&q=80',
+    photo_url: '/images/pothole_before.jpg',
   },
   {
     id: 'sample-1',
@@ -69,7 +69,7 @@ const DEMO_FALLBACK_ISSUES = [
     upvote_count: 19,
     status: 'acknowledged',
     reported_at: '3 days ago',
-    photo_url: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=600&q=80',
+    photo_url: '/images/garbage_before.jpg',
   },
 ]
 
