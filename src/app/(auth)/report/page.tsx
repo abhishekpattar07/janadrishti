@@ -9,6 +9,7 @@ import { useLocale } from '@/lib/useLocale'
 import Link from 'next/link'
 import { Camera, Upload, Trash2, Plus, CheckCircle2, AlertCircle, MapPin, Sparkles, ShieldCheck } from 'lucide-react'
 import { DuplicateAlertCard } from '@/components/issues/DuplicateAlertCard'
+import { VoiceNoteRecorder } from '@/components/report/VoiceNoteRecorder'
 
 interface PhotoItem {
   id: string
@@ -280,6 +281,10 @@ export default function ReportPage() {
   const [success, setSuccess] = useState(false)
   const [successIssueNumber, setSuccessIssueNumber] = useState<number | null>(null)
   const [successId, setSuccessId] = useState<string | null>(null)
+
+  // Voice Note State (Accessibility)
+  const [voiceNoteBlob, setVoiceNoteBlob] = useState<Blob | null>(null)
+  const [voiceNoteUrl, setVoiceNoteUrl] = useState<string | null>(null)
 
   // Auto-detect GPS on load
   useEffect(() => {
@@ -634,6 +639,34 @@ export default function ReportPage() {
             })
           } catch {
             // Non-blocking storage fallback
+          }
+        }
+
+        // 4. Upload Voice Note if recorded
+        if (voiceNoteBlob) {
+          try {
+            const voiceFilename = `${reporterId}/${newIssueId}/voicenote-${Date.now()}.webm`
+            const { data: voiceData } = await supabase.storage
+              .from('issue-media')
+              .upload(voiceFilename, voiceNoteBlob, { contentType: 'audio/webm' })
+
+            let voicePublicUrl = voiceNoteUrl || ''
+            if (voiceData) {
+              const res = supabase.storage.from('issue-media').getPublicUrl(voiceFilename)
+              voicePublicUrl = res.data.publicUrl
+            }
+
+            await supabase.from('issue_media').insert({
+              issue_id: newIssueId,
+              uploaded_by: reporterId,
+              media_type: 'video',
+              storage_path: voiceFilename,
+              public_url: voicePublicUrl,
+              media_context: 'report',
+              captured_at: new Date().toISOString(),
+            })
+          } catch {
+            // Non-blocking voice note fallback
           }
         }
 
@@ -1034,6 +1067,18 @@ export default function ReportPage() {
               className="w-full rounded-2xl border border-gray-300 p-4 text-sm text-slate-900 placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 resize-none"
             />
           </div>
+
+          {/* VOICE NOTE COMPLAINT (ACCESSIBILITY FOR ELDERLY & CITIZENS) */}
+          <VoiceNoteRecorder
+            locale={locale}
+            onAudioRecorded={(blob, url) => {
+              setVoiceNoteBlob(blob)
+              setVoiceNoteUrl(url)
+            }}
+            onAutoTranscribe={(transcribedText) => {
+              setDescription((prev) => (prev.trim() ? `${prev.trim()}\n\n${transcribedText}` : transcribedText))
+            }}
+          />
         </div>
 
         {/* SECTION 4: WARD & LOCATION SELECTION (WITH MANUAL OVERRIDE) */}
