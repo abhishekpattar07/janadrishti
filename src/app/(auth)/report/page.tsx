@@ -8,6 +8,7 @@ import { formatIssueNumber } from '@/lib/utils'
 import { useLocale } from '@/lib/useLocale'
 import Link from 'next/link'
 import { Camera, Upload, Trash2, Plus, CheckCircle2, AlertCircle, MapPin, Sparkles, ShieldCheck } from 'lucide-react'
+import { DuplicateAlertCard } from '@/components/issues/DuplicateAlertCard'
 
 interface PhotoItem {
   id: string
@@ -304,6 +305,48 @@ export default function ReportPage() {
       { enableHighAccuracy: true, timeout: 8000 }
     )
   }
+
+  // Real-time AI Duplicate & Nearby Issue Detection
+  const [nearbyMatch, setNearbyMatch] = useState<any>(null)
+  const [nearbyDismissed, setNearbyDismissed] = useState<boolean>(false)
+
+  // Query nearby open defects whenever category, ward, or GPS changes
+  useEffect(() => {
+    if (nearbyDismissed) return
+
+    const controller = new AbortController()
+    const checkDuplicates = async () => {
+      try {
+        const params = new URLSearchParams()
+        if (category) params.set('category', category)
+        if (selectedWard) params.set('ward', String(selectedWard))
+        if (gps?.lat && gps?.lng) {
+          params.set('lat', String(gps.lat))
+          params.set('lng', String(gps.lng))
+        }
+
+        const res = await fetch(`/api/issues/nearby?${params.toString()}`, {
+          signal: controller.signal,
+        })
+        const data = await res.json()
+        if (data?.found && data?.match) {
+          setNearbyMatch(data.match)
+        } else {
+          setNearbyMatch(null)
+        }
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          // Silent fallback
+        }
+      }
+    }
+
+    const timer = setTimeout(checkDuplicates, 500)
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [category, selectedWard, gps, nearbyDismissed])
 
   // AI Vision Auto-Detection Analyzer
   const analyzePhotoWithAI = (fileName?: string) => {
@@ -942,6 +985,15 @@ export default function ReportPage() {
             })}
           </div>
         </div>
+
+        {/* REAL-TIME AI DUPLICATE / NEARBY ISSUE ALERT */}
+        {nearbyMatch && !nearbyDismissed && (
+          <DuplicateAlertCard
+            match={nearbyMatch}
+            locale={locale}
+            onDismiss={() => setNearbyDismissed(true)}
+          />
+        )}
 
         {/* SECTION 3: TITLE & DETAILED DESCRIPTION */}
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xs space-y-4">
