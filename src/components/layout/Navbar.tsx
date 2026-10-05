@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useLocale, Locale } from '@/lib/useLocale'
 import { Globe, ChevronDown, User, LogOut, FileText, ShieldCheck, Plus } from 'lucide-react'
+import { NotificationBell } from '@/components/layout/NotificationBell'
 
 const NAV_DICTIONARY = {
   en: {
@@ -196,6 +197,9 @@ export function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Civic Alerts & Notifications Bell */}
+          <NotificationBell />
 
           {/* User Profile Dropdown (Logged in) OR Sign In Button (Logged out) */}
           {user ? (

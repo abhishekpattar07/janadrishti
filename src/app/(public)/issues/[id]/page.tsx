@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { UpvoteButton } from '@/components/issues/UpvoteButton'
 import { BeforeAfterSlider } from '@/components/issues/BeforeAfterSlider'
 import { GrievanceReceiptModal } from '@/components/issues/GrievanceReceiptModal'
+import { ShareIssueButton } from '@/components/issues/ShareIssueButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -148,6 +149,7 @@ export default async function IssueDetailPage({ params }: { params: Promise<{ id
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <GrievanceReceiptModal issue={issue} />
+            <ShareIssueButton issue={issue} />
             <UpvoteButton issueId={issue.id} initialCount={issue.upvote_count ?? 0} />
           </div>
         </div>
