@@ -52,7 +52,7 @@ const DEMO_FALLBACK_ISSUES = [
     upvote_count: 34,
     status: 'routed',
     reported_at: '1 day ago',
-    photo_url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?w=600&q=80',
+    photo_url: '/images/drainage_before.jpg',
   },
   {
     id: 'sample-3',

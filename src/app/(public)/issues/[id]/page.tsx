@@ -43,7 +43,7 @@ export default async function IssueDetailPage({ params }: { params: Promise<{ id
       category: { id: 'c1', name: 'Drainage Problem', name_kn: 'ಚರಂಡಿ ಸಮಸ್ಯೆ', slug: 'drainage' },
       ward: { id: 'w30', ward_number: 30, name: 'Station Area' },
       department: { id: 'd4', name: 'Drainage & Sewerage' },
-      media: [{ public_url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?w=800&q=80', media_context: 'report', capture_lat: 16.832, capture_lng: 75.714 }],
+      media: [{ public_url: '/images/drainage_before.jpg', media_context: 'report', capture_lat: 16.832, capture_lng: 75.714 }],
       timeline: [
         { id: 't1', event_type: 'created', description: 'Citizen reported issue with GPS verified photo', created_at: new Date(Date.now() - 3600000 * 36).toISOString() },
         { id: 't2', event_type: 'assignment', description: 'Auto-routed to Drainage & Sewerage Department', created_at: new Date(Date.now() - 3600000 * 35).toISOString() },

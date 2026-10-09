@@ -49,7 +49,7 @@ export default async function IssuesPage({
       category: { id: 'c1', name: 'Drainage Problem', name_kn: 'ಚರಂಡಿ ಸಮಸ್ಯೆ', slug: 'drainage', icon: 'droplets' },
       ward: { id: 'w30', ward_number: 30, name: 'Station Area' },
       department: { id: 'd4', name: 'Drainage & Sewerage', slug: 'drainage' },
-      media: [{ public_url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?w=400&q=80', media_context: 'report' }],
+      media: [{ public_url: '/images/drainage_before.jpg', media_context: 'report' }],
     },
     {
       id: 'sample-2',
